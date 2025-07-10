@@ -1,17 +1,8 @@
 {
-  "version": 2,
-  "buildCommand": "npx vite build",
-  "devCommand": "npx vite",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "env": {
-    "NODE_VERSION": "18.x"
-  }
+  ]
 } 
