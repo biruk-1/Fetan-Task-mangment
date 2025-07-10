@@ -1,15 +1,18 @@
 export interface Task {
   id: string;
   title: string;
-  completed: boolean;
+  status: 'pending' | 'completed' | 'in_progress';
+  userId: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface User {
   id: string;
-  name: string;
   email: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LoginCredentials {
@@ -22,6 +25,6 @@ export interface SignupCredentials extends LoginCredentials {
 }
 
 export interface AuthResponse {
-  token: string;
   user: User;
+  token: string;
 } 

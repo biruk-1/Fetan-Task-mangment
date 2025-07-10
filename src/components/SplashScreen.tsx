@@ -1,26 +1,25 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-export const SplashScreen: React.FC = () => {
+const SplashScreen: React.FC = () => {
   return (
-    <div className="splash-screen">
-      <div className="text-center">
-        <div className="splash-logo mx-auto mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-full h-full"
-          >
-            <path
-              fillRule="evenodd"
-              d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-              clipRule="evenodd"
-            />
-          </svg>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="flex flex-col md:flex-row">
+          {/* Left side - Logo */}
+          <div className="md:w-1/3 p-8 flex flex-col justify-center">
+            <h1 className="text-3xl font-bold mb-2">Taskify</h1>
+            <div className="h-0.5 w-12 bg-pink-500 mb-6"></div>
+          </div>
+          
+          {/* Right side - Auth Forms */}
+          <div className="md:w-2/3 p-8">
+            <Outlet />
+          </div>
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Taskify</h1>
-        <p className="text-gray-600">Organize your tasks with ease</p>
       </div>
     </div>
   );
-}; 
+};
+
+export default SplashScreen; 
