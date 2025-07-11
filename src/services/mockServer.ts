@@ -11,7 +11,6 @@ export function makeServer({ environment = 'development' } = {}) {
     },
 
     seeds(server) {
-      // Create test user
       server.create('user', {
         id: '1',
         email: 'test@example.com',
@@ -19,125 +18,64 @@ export function makeServer({ environment = 'development' } = {}) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       } as User);
-
-      // Create sample tasks
-      const sampleTasks = [
-        {
-          id: '1',
-          title: 'FetanSystem Technology internship test project',
-          status: 'completed',
-          userId: '1',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          title: 'FetanSystem Technology internship test project',
-          status: 'in_progress',
-          userId: '1',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: '3',
-          title: 'FetanSystem Technology internship test project',
-          status: 'pending',
-          userId: '1',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: '4',
-          title: 'FetanSystem Technology internship test project',
-          status: 'completed',
-          userId: '1',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          id: '5',
-          title: 'FetanSystem Technology internship test project',
-          status: 'pending',
-          userId: '1',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }
-      ];
-
-      sampleTasks.forEach(task => {
-        server.create('task', task as Task);
-      });
     },
 
     routes() {
       this.namespace = 'api';
 
-      // Auth endpoints
       this.post('/auth/login', (schema, request) => {
         const { email, password } = JSON.parse(request.requestBody);
-        const user = schema.findBy('user', { email });
+        const user = schema.findBy('user', { email: email.toLowerCase() }) as any;
 
         if (user && password === 'password') {
           return {
-            token: 'fake-jwt-token',
             user: user.attrs,
+            token: 'fake-jwt-token',
           };
         }
 
-        return new Response(401, {}, { error: 'Invalid credentials' });
+        return new Response(
+          401,
+          {},
+          { error: 'Invalid email or password' }
+        );
       });
 
-      this.post('/auth/signup', (schema, request) => {
-        const attrs = JSON.parse(request.requestBody);
-        const user = schema.create('user', {
-          ...attrs,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        } as User);
-
-        return {
-          token: 'fake-jwt-token',
-          user: user.attrs,
-        };
-      });
-
-      // Task endpoints
       this.get('/tasks', (schema) => {
         const tasks = schema.all('task');
-        return tasks.models.map(task => ({
+        return tasks.models.map((task: any) => ({
           ...task.attrs,
-          status: task.attrs.status || 'pending',
+          status: task.attrs?.status || 'pending',
+          completed: task.attrs?.completed || false,
         }));
       });
 
       this.post('/tasks', (schema, request) => {
         const attrs = JSON.parse(request.requestBody);
-        const newTask = {
+        const task = schema.create('task', {
+          ...attrs,
           id: Math.random().toString(36).substr(2, 9),
-          title: attrs.title,
-          status: 'pending',
-          userId: '1',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-        } as Task;
-        
-        const task = schema.create('task', newTask);
+        } as Task);
+
         return task.attrs;
       });
 
       this.patch('/tasks/:id', (schema, request) => {
         const id = request.params.id;
         const attrs = JSON.parse(request.requestBody);
-        const task = schema.find('task', id);
-        
+        const task = schema.find('task', id) as any;
+
         if (!task) {
           return new Response(404, {}, { error: 'Task not found' });
         }
 
         const updatedTask = task.update({
+          ...task.attrs,
           ...attrs,
           updatedAt: new Date().toISOString(),
-        } as Task);
+        });
 
         return updatedTask.attrs;
       });
@@ -151,7 +89,7 @@ export function makeServer({ environment = 'development' } = {}) {
         }
 
         task.destroy();
-        return new Response(204, {});
+        return new Response(204);
       });
     },
   });
