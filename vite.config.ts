@@ -7,8 +7,19 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
   },
   server: {
-    port: 5173,
+    port: 5173
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2020'
+    }
+  },
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  }
 }); 
