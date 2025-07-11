@@ -5,8 +5,7 @@
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "installCommand": "npm install --force"
+  "buildCommand": "npx tsc && vite build",
+  "installCommand": "npm install",
+  "framework": "vite"
 } 
